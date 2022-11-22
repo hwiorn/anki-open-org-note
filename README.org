@@ -25,10 +25,11 @@ org-heading and text easily without any extra backlink field.
    - This plugin will search =card-id= through your org files entirely. If you
      have [[https://github.com/BurntSushi/ripgrep][ripgrep]] program in your system, this searching will much faster.
 * TODOs
-- [ ] Support [[https://github.com/vascoferreira25/org-mode-incremental-reading][org-mode-incremental-reading]]
+- [X] Implement a initial anki plugin.
+- [ ] Support [[https://github.com/vascoferreira25/org-mode-incremental-reading][the org-mode-incremental-reading]]
   - =org-anki= and =anki-editor= use the tree structure for card design. But
     =org-mode-incremental-reading= adds a [[https://orgmode.org/manual/Drawers.html][property drawer]] for the card design to
-    handle the long text such as book and article.
+    handle the long text such as book and article sytles.
 
 * Contributions
 - [[https://www.flaticon.com/free-icons/unicorn][Unicorn icons]] created by Freepik - Flaticon
