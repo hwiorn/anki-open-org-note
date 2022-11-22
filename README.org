@@ -30,6 +30,4 @@ org-heading and text easily without any extra backlink field.
     handle the long text such as book and article.
 
 * Contributions
-#+begin_export html
-<a href="https://www.flaticon.com/free-icons/unicorn" title="unicorn icons">Unicorn icons created by Freepik - Flaticon</a>
-#+end_export
+- [[https://www.flaticon.com/free-icons/unicorn][Unicorn icons]] created by Freepik - Flaticon
