@@ -8,3 +8,8 @@ tmp/
 *.egg
 build
 htmlcov
+
+*.addon
+*.ankiaddon
+*.zip
+meta.json

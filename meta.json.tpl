@@ -1,5 +1,5 @@
 {
-    "mod": 1234123412341,
+    "mod": __MOD__,
     "name": "Open Org Note",
     "conflicts": []
 }
