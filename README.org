@@ -11,7 +11,8 @@ org-heading and text easily without any extra backlink field.
 #+ATTR_HTML: :width 500px
 [[file:screencast/sc_1.gif]]
 
-1) Install this plugin.
+1) Install [[https://ankiweb.net/shared/info/1094177960][this plugin]].
+   -  please copy and paste =1094177960= into your Anki 2.1.
 2) Change your default =org-directory= path(=~/org=) in the =open-org-note= plugin.
    - Go to =tools= menu -> Click =Add-ons= -> Select =Open Org Note= -> Click the
      =Config= Button.
