@@ -1,0 +1,19 @@
+{
+    "org-paths": [
+        "~/org"
+    ],
+    "use_index_cache": true,
+    "use_ripgrep": true,
+    "ripgrep_opts": "ripgrep -ni",
+    "note_match": "^\\s*:ANKI_NOTE_ID:\\s*\\\"?{note_id}\\\"?\\b",
+    "exec": "emacsclient -nce '(progn (select-frame-set-input-focus (selected-frame)) (find-file \"{org_file}\") (goto-char {char_pos}) (org-back-to-heading t) (recenter))'",
+    "shortcuts": {
+        "open": "Ctrl+O"
+    },
+    "texts": {
+        "open_menu": "Org Notes",
+        "open_btn": "Open",
+        "open_hint": "Open Org Note in Editor",
+        "open": "Open Note"
+    }
+}

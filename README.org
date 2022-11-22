@@ -1,0 +1,35 @@
+* Open the org note related the card from Anki!
+#+ATTR_HTML: :width 300px
+[[file:icons/unicorn.png]]
+
+You don't need any sophisticated works inside org files to open the related org
+file. Just make some Anki cards from org files and Press =Ctrl+O= key in Anki when you
+are reviewing one of the cards. This plugin makes workflow that going back to your original
+org-heading and text easily without any extra backlink field.
+
+* How to
+#+ATTR_HTML: :width 500px
+[[file:screencast/sc_1.gif]]
+
+1) Install this plugin.
+2) Change your default =org-directory= path(=~/org=) in the =open-org-note= plugin.
+   - Go to =tools= menu -> Click =Add-ons= -> Select =Open Org Note= -> Click the
+     =Config= Button.
+   - Multiple org-directories are supported.
+3) Make your anki-card using [[https://github.com/eyeinsky/org-anki/][org-anki]] or [[https://github.com/louietan/anki-editor][anki-editor]].
+   - This plugin handle cards only which are generated from =org= files.
+4) When you are on =Review= or =Deck-Browser=, click the =Open Note= button or Press
+   =Ctrl+O= key.
+   - You can change the shortcut in the config window.
+   - This plugin will search =card-id= through your org files entirely. If you
+     have [[https://github.com/BurntSushi/ripgrep][ripgrep]] program in your system, this searching will much faster.
+* TODOs
+- [ ] Support [[https://github.com/vascoferreira25/org-mode-incremental-reading][org-mode-incremental-reading]]
+  - =org-anki= and =anki-editor= use the tree structure for card design. But
+    =org-mode-incremental-reading= adds a [[https://orgmode.org/manual/Drawers.html][property drawer]] for the card design to
+    handle the long text such as book and article.
+
+* Contributions
+#+begin_export html
+<a href="https://www.flaticon.com/free-icons/unicorn" title="unicorn icons">Unicorn icons created by Freepik - Flaticon</a>
+#+end_export
