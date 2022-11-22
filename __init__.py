@@ -49,14 +49,14 @@ def search_in_org(file, note_id):
         data = open(file, "r").read()
     except Exception as e:
         print("Openfile: open: %s" % str(e))
-        return None
+        return ()
 
     res = config["note_match"].format(note_id=note_id)
     found = re.compile(res, flags=re.MULTILINE).search(data)
     if found:
-        return (found.start(0), found.end(0))
+        return (found.group(1), found.start(0), found.end(0))
 
-    return None
+    return ()
 
 
 def lru_file_cache(func):
@@ -89,6 +89,8 @@ def find_anki_note(note_id, org_dir='~/org'):
     search_path = os.path.expanduser(org_dir)
     use_ripgrep = config["use_ripgrep"]
     rg_opts = config["ripgrep_opts"].split(" ")
+
+    note_type = "ANKI_NOTE_ID"
     if use_ripgrep and shutil.which(rg_opts[0]):
         pat = config["note_match"].format(note_id="(.+?)")
         rg_ret = subprocess.run(rg_opts.split(' ') + ['--json', pat, f'"{search_path}"'], stdout=subprocess.PIPE).stdout.decode('utf-8')
@@ -105,7 +107,14 @@ def find_anki_note(note_id, org_dir='~/org'):
             abs_offset = js_line["data"]["absolute_offset"]
             sub_start = js_line["data"]["submatches"][0]["start"]
             sub_end = js_line["data"]["submatches"][0]["end"]
-            return org_name, (abs_offset + sub_start, abs_offset+sub_end)
+            match_text = js_line["data"]["submatches"][0]["match"]
+
+            if match_text:
+                found_note_type = re.findall(pat, match_text["text"])
+                if found_note_type:
+                    note_type = found_note_type[0]
+
+            return org_name, (note_type, abs_offset + sub_start, abs_offset+sub_end)
     else:
         for org_name in glob(os.path.join(search_path, '**/*.org'), recursive=True):
             docs = search_in_org(org_name, note_id)
@@ -120,8 +129,10 @@ def open_anki_note(note_id):
         org_file, found_note = find_anki_note(note_id, org_dir)
         # print('debug:', org_file, found_note)
         if org_file and found_note:
-            char_pos = found_note[0]
-            os.system(config["exec"].format(org_file=org_file, char_pos=char_pos))
+            note_type = found_note[0]
+            char_pos_begin = found_note[1]
+            char_pos_end = found_note[2]
+            os.system(config["exec"].format(org_file=org_file, note_type=note_type, char_pos_begin=char_pos_begin, char_pos_end=char_pos_end))
             found = True
             break
 

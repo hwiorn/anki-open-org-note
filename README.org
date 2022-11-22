@@ -7,12 +7,12 @@ file. Just make some Anki cards from org files and Press =Ctrl+O= key in Anki wh
 are reviewing one of the cards. This plugin makes workflow that going back to your original
 org-heading and text easily without any extra backlink field.
 
-* How to
+* How to Use
 #+ATTR_HTML: :width 500px
 [[file:screencast/sc_1.gif]]
 
 1) Install [[https://ankiweb.net/shared/info/1094177960][this plugin]].
-   -  please copy and paste =1094177960= into your Anki 2.1.
+   -  Please copy and paste =1094177960= into your Anki 2.1.
 2) Change your default =org-directory= path(=~/org=) in the =open-org-note= plugin.
    - Go to =tools= menu -> Click =Add-ons= -> Select =Open Org Note= -> Click the
      =Config= Button.
@@ -26,7 +26,7 @@ org-heading and text easily without any extra backlink field.
      have [[https://github.com/BurntSushi/ripgrep][ripgrep]] program in your system, this searching will much faster.
 * TODOs
 - [X] Implement a initial anki plugin.
-- [ ] Support [[https://github.com/vascoferreira25/org-mode-incremental-reading][the org-mode-incremental-reading]]
+- [X] Support [[https://github.com/vascoferreira25/org-mode-incremental-reading][the org-mode-incremental-reading]]
   - =org-anki= and =anki-editor= use the tree structure for card design. But
     =org-mode-incremental-reading= adds a [[https://orgmode.org/manual/Drawers.html][property drawer]] for the card design to
     handle the long text such as book and article sytles.
