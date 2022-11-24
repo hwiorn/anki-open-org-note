@@ -1,11 +1,12 @@
-* Open the org note related the card from Anki!
+* Open the original org-note related the card from Anki!
 #+ATTR_HTML: :width 300px
 [[file:icons/unicorn.png]]
 
-You don't need any sophisticated works inside org files to open the related org
-file. Just make some Anki cards from org files and Press =Ctrl+O= key in Anki when you
-are reviewing one of the cards. This plugin makes workflow that going back to your original
-org-heading and text easily without any extra backlink field.
+Just make some Anki cards from org files and Press =Ctrl+O= key in Anki when you
+are reviewing one of the cards. You don't need any sophisticated works inside
+org files to open the related org file. This plugin makes workflow that going
+back to your original org-heading and text easily without any extra backlink
+field.
 
 * How to Use
 #+ATTR_HTML: :width 500px
@@ -18,15 +19,15 @@ org-heading and text easily without any extra backlink field.
      =Config= Button.
    - Multiple org-directories are supported.
 3) Make your anki-card using [[https://github.com/eyeinsky/org-anki/][org-anki]] or [[https://github.com/louietan/anki-editor][anki-editor]].
-   - This plugin handle cards only which are generated from =org= files.
+   - This plugin handle cards only which are generated from =org= files using Emacs.
 4) When you are on =Review= or =Deck-Browser=, click the =Open Note= button or Press
    =Ctrl+O= key.
-   - You can change the shortcut in the config window.
-   - This plugin will search =card-id= through your org files entirely. If you
+   - You can change the =Ctrl+O= shortcut in the config window.
+   - This plugin will search =card id= through your org files entirely. If you
      have [[https://github.com/BurntSushi/ripgrep][ripgrep]] program in your system, this searching will much faster.
 * TODOs
-- [X] Implement a initial anki plugin.
-- [X] Support [[https://github.com/vascoferreira25/org-mode-incremental-reading][the org-mode-incremental-reading]]
+- [x] Implement a initial anki plugin.
+- [x] Support [[https://github.com/vascoferreira25/org-mode-incremental-reading][the org-mode-incremental-reading]]
   - =org-anki= and =anki-editor= use the tree structure for card design. But
     =org-mode-incremental-reading= adds a [[https://orgmode.org/manual/Drawers.html][property drawer]] for the card design to
     handle the long text such as book and article sytles.
