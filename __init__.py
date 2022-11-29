@@ -77,9 +77,10 @@ def lru_file_cache(func):
         if cache_missed:
             # print('cache miss!')
             org_name, docs = func(*args)
-            mtime = os.path.getmtime(org_name)
-            size = os.path.getsize(org_name)
-            func.cache[args] = (org_name, docs, size, mtime)
+            if org_name:
+                mtime = os.path.getmtime(org_name)
+                size = os.path.getsize(org_name)
+                func.cache[args] = (org_name, docs, size, mtime)
         return org_name, docs
 
     return wrapper
