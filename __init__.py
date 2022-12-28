@@ -151,7 +151,7 @@ def tools_open_org_note():
         elif aqt.mw.state == 'deckBrowser' or aqt.mw.state == 'overview':
             current_card = bcard()
             # current_side = aqt.mw.reviewer.state
-        note_id = current_card.id
+        note_id = current_card.nid
         # print('CARD ID::::', note_id)
         open_anki_note(note_id)
     except Exception:  # just in case, pylint:disable=broad-except
@@ -162,7 +162,7 @@ class OpenButton(aqt.qt.QPushButton):
         super().__init__(aqt.qt.QIcon(ICON_PATH), open_btn_text)
         def request_open_note():
             if check_browser():
-                note_id = bcard().id
+                note_id = bcard().nid
                 # print("CARD ID:", note_id)
                 open_anki_note(note_id)
 
@@ -185,10 +185,10 @@ def editor_button():
     def createOpenButton(editor):
         note_id = ''
         if check_browser():
-            note_id = bcard().id
+            note_id = bcard().nid
             # print("CARD ID:", note_id)
         else:
-            note_id = card().id
+            note_id = card().nid
             # print("EDITOR CARD:", note_id)
         open_anki_note(note_id)
 
@@ -216,7 +216,7 @@ def reviewer_hooks():
                     # current_side = aqt.mw.reviewer.state
                 elif web_view.objectName() == 'mainText':  # card template dialog
                     current_card = window.card
-                note_id = current_card.id
+                note_id = current_card.nid
                 # print('CARD ID::::', note_id)
                 open_anki_note(note_id)
             except Exception:  # just in case, pylint:disable=broad-except
