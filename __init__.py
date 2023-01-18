@@ -10,6 +10,7 @@ import re
 import shutil
 import subprocess
 import json
+import time
 from functools import wraps
 
 import anki
@@ -162,10 +163,16 @@ class OpenButton(aqt.qt.QPushButton):
         super().__init__(aqt.qt.QIcon(ICON_PATH), open_btn_text)
         def request_open_note():
             if check_browser():
-                note_id = bcard().nid
-                # print("CARD ID:", note_id)
-                open_anki_note(note_id)
+                _bcard = bcard()
+                if _bcard:
+                    note_id = bcard().nid
+                    # print("CARD ID:", note_id)
+                    open_anki_note(note_id)
+                else:
+                    aqt.utils.showWarning(f'There is no selected card in browser')
 
+        self.setAutoDefault(True)
+        self.setShortcut(open_shortcut)
         self.clicked.connect(request_open_note)
 
 def cards_button():
@@ -236,19 +243,45 @@ def preview_buttons():
     def setup_preview_slideshow(target_browser):
         "prepare when browser window shows up."
         def add_slideshow_ui_to_preview_window():
-            if app_version_micro >= 24:
-                preview_window = target_browser._previewer
-                # from 2.1.24 we can reference bbox as attr
-                bbox = preview_window.bbox
-            else:
-                preview_window = target_browser._previewWindow
-                bbox = target_browser._previewNext.parentWidget()
+            preview_window = None
+            bbox = None
+            i = 0
+            while True:
+                try:
+                    if app_version_micro >= 24:
+                        preview_window = target_browser._previewer
+                        # from 2.1.24 we can reference bbox as attr
+                        bbox = preview_window.bbox
+                    else:
+                        preview_window = target_browser._previewWindow
+                        bbox = target_browser._previewNext.parentWidget()
+                    if preview_window.isVisible():
+                        break
+                except Exception:
+                    pass
+                if i >= 10:
+                    # preview_window is closing
+                    preview_window = None
+                    break
+                else:
+                    # well pc is really slow
+                    i += 1
+                    time.sleep(0.2)
+                    continue
 
-            #open_button = bbox.addButton("Open org note", aqt.qt.QDialogButtonBox.ActionRole)
+            # open_button = bbox.addButton("Open org note", aqt.qt.QDialogButtonBox.ActionRole)
             bbox.addButton(OpenButton(), aqt.qt.QDialogButtonBox.ButtonRole.ActionRole)
             #open_button.setAutoDefault(True)
             # open_button.setToolTip("Open Org Note in Editor")
-            #open_button.clicked.connect(request_open_note)
+            # open_button.clicked.connect(request_open_note)
+            #
+
+        # from version "2.1.41" preview button is added to editor
+        if app_version_micro <= 40:
+            # editor is static
+            form = target_browser.form
+            form.previewButton.clicked.connect(add_slideshow_ui_to_preview_window)
+            return None
 
         original_preview_f = target_browser.onTogglePreview
         def onTogglePreview():
@@ -257,7 +290,7 @@ def preview_buttons():
         target_browser.onTogglePreview = onTogglePreview
 
     # aqt.gui_hooks.browser_menus_did_init.append(setup_preview_slideshow)
-    anki.hooks.addHook("browser.setupMenus", setup_preview_slideshow) # Legacy support
+    anki.hooks.addHook("browser.setupMenus", setup_preview_slideshow) # Legacy support < 20
 
 def browser_menus():
     def on_setup_menus(browser):
