@@ -201,7 +201,8 @@ def editor_button():
         buttons.append(new_button)
         return buttons
 
-    aqt.gui_hooks.editor_did_init_buttons.append(addOpenButton)
+    # aqt.gui_hooks.editor_did_init_buttons.append(addOpenButton)
+    anki.hooks.addHook("setupEditorButtons", addOpenButton) # Legacy support
 
 def reviewer_hooks():
     def on_context_menu(web_view, menu):
@@ -255,9 +256,8 @@ def preview_buttons():
             add_slideshow_ui_to_preview_window()
         target_browser.onTogglePreview = onTogglePreview
 
-
-    from aqt import gui_hooks
-    gui_hooks.browser_menus_did_init.append(setup_preview_slideshow)
+    # aqt.gui_hooks.browser_menus_did_init.append(setup_preview_slideshow)
+    anki.hooks.addHook("browser.setupMenus", setup_preview_slideshow) # Legacy support
 
 def browser_menus():
     def on_setup_menus(browser):
