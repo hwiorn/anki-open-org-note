@@ -20,6 +20,7 @@ field.
    - Multiple org-directories are supported.
 3) Make your anki-card using [[https://github.com/eyeinsky/org-anki/][org-anki]] or [[https://github.com/louietan/anki-editor][anki-editor]].
    - This plugin handle cards only which are generated from =org= files using Emacs.
+   - Make sure your Emacs server must be running. e.g. =M-x server-start=
 4) When you are on =Review= or =Deck-Browser=, click the =Open Note= button or Press
    =Ctrl+O= key.
    - You can change the =Ctrl+O= shortcut in the config window.
