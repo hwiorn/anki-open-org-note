@@ -19,7 +19,9 @@ import aqt.qt
 from aqt import appVersion
 from aqt import mw
 
-app_version_micro = int(appVersion.rsplit('.', 1)[-1])
+# Anki changes its version scheme to "year.month".
+app_version_major = int(appVersion.rsplit('.')[0])
+app_version_micro = int(appVersion.rsplit('.')[-1])
 
 ADDON_PATH = os.path.dirname(__file__)
 MODULE_ADDON = __name__.split(".")[0]
@@ -93,9 +95,10 @@ def find_anki_note(note_id, org_dir='~/org'):
     rg_opts = config["ripgrep_opts"].split(" ")
 
     note_type = "ANKI_NOTE_ID"
+
     if use_ripgrep and shutil.which(rg_opts[0]):
-        pat = config["note_match"].format(note_id="(.+?)")
-        rg_ret = subprocess.run(rg_opts.split(' ') + ['--json', pat, f'"{search_path}"'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        pat = config["note_match"].format(note_id=note_id)
+        rg_ret = subprocess.run(rg_opts + ['--json', pat, search_path], stdout=subprocess.PIPE).stdout.decode('utf-8')
         for rg_line in rg_ret.split("\n"):
             rg_line = rg_line.strip()
             if not rg_line:
@@ -116,6 +119,7 @@ def find_anki_note(note_id, org_dir='~/org'):
                 if found_note_type:
                     note_type = found_note_type[0]
 
+            # Early return
             return org_name, (note_type, abs_offset + sub_start, abs_offset+sub_end)
     else:
         for org_name in glob(os.path.join(search_path, '**/*.org'), recursive=True):
@@ -248,7 +252,8 @@ def preview_buttons():
             i = 0
             while True:
                 try:
-                    if app_version_micro >= 24:
+                    if app_version_major >= 23 or \
+                       app_version_major == 2 and app_version_micro >= 24:
                         preview_window = target_browser._previewer
                         # from 2.1.24 we can reference bbox as attr
                         bbox = preview_window.bbox
@@ -277,7 +282,7 @@ def preview_buttons():
             #
 
         # from version "2.1.41" preview button is added to editor
-        if app_version_micro <= 40:
+        if app_version_major == 2 and app_version_micro <= 40:
             # editor is static
             form = target_browser.form
             form.previewButton.clicked.connect(add_slideshow_ui_to_preview_window)
