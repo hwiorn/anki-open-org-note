@@ -108,7 +108,8 @@ def find_anki_note(note_id, org_dir="~/org"):
     if use_ripgrep and shutil.which(rg_opts[0]):
         pat = config["note_match"].format(note_id=note_id)
         rg_ret = subprocess.run(
-            rg_opts + ["--json", pat, search_path], stdout=subprocess.PIPE
+            rg_opts + ["--json", pat.replace('\\"', '"'), search_path],
+            stdout=subprocess.PIPE,
         ).stdout.decode("utf-8")
         for rg_line in rg_ret.split("\n"):
             rg_line = rg_line.strip()
