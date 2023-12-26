@@ -53,10 +53,28 @@ def bcard():  # _debugBrowserCard(self):
 
 
 def search_in_org(file, note_id):
+    if not os.path.exists(file):
+        print(f"Openfile: No such file: {file}")
+        return ()
+
+    data = ''
     try:
         data = open(file, "r").read()
     except Exception as e:
-        print("Openfile: open: %s" % str(e))
+        try:
+            import codecs
+            encoding = config["fallback_encoding"]
+            data = codecs.open(file, "r", encoding).read()
+            try:
+                if encoding.lower() not in ['utf-8', 'utf8', 'utf_8']:
+                    data = codecs.open(file, "r", 'utf-8').read()
+                else:
+                    print(f"Openfile: codecs.open(utf-8): {e}")
+            except Exception as e:
+                print(f"Openfile: codecs.open({encoding}): {e}")
+                return ()
+
+    if not data.strip():
         return ()
 
     res = config["note_match"].format(note_id=note_id)
@@ -102,14 +120,14 @@ def find_anki_note(note_id, org_dir="~/org"):
     search_path = os.path.expanduser(org_dir)
     use_ripgrep = config["use_ripgrep"]
     rg_opts = config["ripgrep_opts"].split(" ")
-
     note_type = "ANKI_NOTE_ID"
 
     if use_ripgrep and shutil.which(rg_opts[0]):
         pat = config["note_match"].format(note_id=note_id)
         rg_ret = subprocess.run(
-            rg_opts + ["--json", pat.replace('\\"', '"'), search_path],
+            rg_opts + ["--json", "-e", pat, search_path],
             stdout=subprocess.PIPE,
+            universal_newlines=True,
         ).stdout.decode("utf-8")
         for rg_line in rg_ret.split("\n"):
             rg_line = rg_line.strip()
