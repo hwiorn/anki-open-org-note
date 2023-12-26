@@ -151,14 +151,19 @@ def open_anki_note(note_id):
             note_type = found_note[0]
             char_pos_begin = found_note[1]
             char_pos_end = found_note[2]
-            os.system(
-                config["exec"].format(
-                    org_file=org_file,
-                    note_type=note_type,
-                    char_pos_begin=char_pos_begin,
-                    char_pos_end=char_pos_end,
-                )
+            cmd = config["exec"].format(
+                org_file=org_file,
+                note_type=note_type,
+                char_pos_begin=char_pos_begin,
+                char_pos_end=char_pos_end,
             )
+
+            try:
+                subprocess.check_output(cmd, shell=True)
+            except subprocess.CalledProcessError as err
+                print(f"E: Open anki note({note_id})\ncommand: {cmd}\n{err.returncode}, {err.output}")
+                aqt.utils.showWarning(f"E: Open anki note({note_id})\n{err.output}\n>>>>>>\ncommand: {cmd}")
+
             found = True
             break
 
