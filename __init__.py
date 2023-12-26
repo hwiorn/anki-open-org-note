@@ -131,7 +131,7 @@ def find_anki_note(note_id, org_dir="~/org"):
             rg_opts + ["--json", "-e", pat, search_path],
             stdout=subprocess.PIPE,
             universal_newlines=True,
-        ).stdout.decode("utf-8")
+        ).stdout
         for rg_line in rg_ret.split("\n"):
             rg_line = rg_line.strip()
             if not rg_line:
