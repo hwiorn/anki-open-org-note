@@ -13,6 +13,7 @@ import json
 import time
 from functools import wraps
 
+import platform
 import anki
 import aqt
 import aqt.qt
@@ -63,7 +64,8 @@ def search_in_org(file, note_id):
     except Exception as e:
         try:
             import codecs
-            encoding = config["fallback_encoding"]
+            encoding = config["fallback_encoding"] if "fallback_encoding" in config or config["fallback_encoding"] else "utf-8"
+
             data = codecs.open(file, "r", encoding).read()
         except Exception as e:
             try:
@@ -394,3 +396,6 @@ reviewer_hooks()
 preview_buttons()
 browser_menus()
 tools_menus()
+
+if platform.system() == "Darwin":
+    os.environ["PATH"] += os.pathsep + os.pathsep.join(['/usr/local/bin', '/usr/bin'])
