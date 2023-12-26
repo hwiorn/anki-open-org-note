@@ -20,8 +20,8 @@ from aqt import appVersion
 from aqt import mw
 
 # Anki changes its version scheme to "year.month".
-app_version_major = int(appVersion.rsplit('.')[0])
-app_version_micro = int(appVersion.rsplit('.')[-1])
+app_version_major = int(appVersion.rsplit(".")[0])
+app_version_micro = int(appVersion.rsplit(".")[-1])
 
 ADDON_PATH = os.path.dirname(__file__)
 MODULE_ADDON = __name__.split(".")[0]
@@ -34,18 +34,23 @@ open_menu_text = config["texts"]["open_menu"]
 open_btn_text = config["texts"]["open_btn"]
 open_hint_text = config["texts"]["open_hint"]
 
+
 def check_browser():
-    return aqt.dialogs._dialogs['Browser'][1]
+    return aqt.dialogs._dialogs["Browser"][1]
+
 
 # NOTE card() gets a user reviewing card and bcard() gets a user browsing card.
 # If user uses reviewing and browsing at same time, they functions return
 # different card ids. Context Menu can be uses preview window and review window.
 # But Preview window follows Browser Window which can call bcard() function.
 def card():
-    #return self.reviewer.card.__dict__
+    # return self.reviewer.card.__dict__
     return aqt.mw.reviewer.card
-def bcard(): #_debugBrowserCard(self):
-    return aqt.dialogs._dialogs['Browser'][1].card
+
+
+def bcard():  # _debugBrowserCard(self):
+    return aqt.dialogs._dialogs["Browser"][1].card
+
 
 def search_in_org(file, note_id):
     try:
@@ -64,6 +69,7 @@ def search_in_org(file, note_id):
 
 def lru_file_cache(func):
     func.cache = {}
+
     @wraps(func)
     def wrapper(*args):
         org_name = ""
@@ -74,7 +80,9 @@ def lru_file_cache(func):
         cache_missed = True
         if args in func.cache:
             org_name, docs, size, mtime = func.cache[args]
-            if os.path.exists(org_name) and (mtime == os.path.getmtime(org_name) or size == os.path.getsize(org_name)):
+            if os.path.exists(org_name) and (
+                mtime == os.path.getmtime(org_name) or size == os.path.getsize(org_name)
+            ):
                 cache_missed = False
 
         if cache_missed:
@@ -88,8 +96,9 @@ def lru_file_cache(func):
 
     return wrapper
 
+
 @lru_file_cache
-def find_anki_note(note_id, org_dir='~/org'):
+def find_anki_note(note_id, org_dir="~/org"):
     search_path = os.path.expanduser(org_dir)
     use_ripgrep = config["use_ripgrep"]
     rg_opts = config["ripgrep_opts"].split(" ")
@@ -98,7 +107,9 @@ def find_anki_note(note_id, org_dir='~/org'):
 
     if use_ripgrep and shutil.which(rg_opts[0]):
         pat = config["note_match"].format(note_id=note_id)
-        rg_ret = subprocess.run(rg_opts + ['--json', pat, search_path], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        rg_ret = subprocess.run(
+            rg_opts + ["--json", pat, search_path], stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")
         for rg_line in rg_ret.split("\n"):
             rg_line = rg_line.strip()
             if not rg_line:
@@ -120,14 +131,15 @@ def find_anki_note(note_id, org_dir='~/org'):
                     note_type = found_note_type[0]
 
             # Early return
-            return org_name, (note_type, abs_offset + sub_start, abs_offset+sub_end)
+            return org_name, (note_type, abs_offset + sub_start, abs_offset + sub_end)
     else:
-        for org_name in glob(os.path.join(search_path, '**/*.org'), recursive=True):
+        for org_name in glob(os.path.join(search_path, "**/*.org"), recursive=True):
             docs = search_in_org(org_name, note_id)
             if docs:
                 return org_name, docs
 
     return None, None
+
 
 def open_anki_note(note_id):
     found = False
@@ -138,22 +150,29 @@ def open_anki_note(note_id):
             note_type = found_note[0]
             char_pos_begin = found_note[1]
             char_pos_end = found_note[2]
-            os.system(config["exec"].format(org_file=org_file, note_type=note_type, char_pos_begin=char_pos_begin, char_pos_end=char_pos_end))
+            os.system(
+                config["exec"].format(
+                    org_file=org_file,
+                    note_type=note_type,
+                    char_pos_begin=char_pos_begin,
+                    char_pos_end=char_pos_end,
+                )
+            )
             found = True
             break
 
     if not found:
-        aqt.utils.showInfo(f'There is no org note for anki: {note_id}')
+        aqt.utils.showInfo(f"There is no org note for anki: {note_id}")
 
 
 def tools_open_org_note():
     try:  # this works for web views in the reviewer and template dialog
         # print(f'MW STATE: {aqt.mw.state}')
-        #if window is aqt.mw and aqt.mw.state == 'review':
-        if aqt.mw.state == 'review':
+        # if window is aqt.mw and aqt.mw.state == 'review':
+        if aqt.mw.state == "review":
             current_card = aqt.mw.reviewer.card
             # current_side = aqt.mw.reviewer.state
-        elif aqt.mw.state == 'deckBrowser' or aqt.mw.state == 'overview':
+        elif aqt.mw.state == "deckBrowser" or aqt.mw.state == "overview":
             current_card = bcard()
             # current_side = aqt.mw.reviewer.state
         note_id = current_card.nid
@@ -162,9 +181,11 @@ def tools_open_org_note():
     except Exception:  # just in case, pylint:disable=broad-except
         pass
 
+
 class OpenButton(aqt.qt.QPushButton):
     def __init__(self):
         super().__init__(aqt.qt.QIcon(ICON_PATH), open_btn_text)
+
         def request_open_note():
             if check_browser():
                 _bcard = bcard()
@@ -173,11 +194,12 @@ class OpenButton(aqt.qt.QPushButton):
                     # print("CARD ID:", note_id)
                     open_anki_note(note_id)
                 else:
-                    aqt.utils.showWarning(f'There is no selected card in browser')
+                    aqt.utils.showWarning(f"There is no selected card in browser")
 
         self.setAutoDefault(True)
         self.setShortcut(open_shortcut)
         self.clicked.connect(request_open_note)
+
 
 def cards_button():
     from aqt import clayout
@@ -186,15 +208,16 @@ def cards_button():
         clayout.CardLayout.setupButtons,
         lambda card_layout: card_layout.buttons.insertWidget(
             # 3 if card_layout.buttons.count() in [6, 7] else 0,
-            card_layout.buttons.count()-2,
+            card_layout.buttons.count() - 2,
             OpenButton(),
         ),
-        'after',  # must use 'after' so that 'buttons' attribute is set
+        "after",  # must use 'after' so that 'buttons' attribute is set
     )
+
 
 def editor_button():
     def createOpenButton(editor):
-        note_id = ''
+        note_id = ""
         if check_browser():
             note_id = bcard().nid
             # print("CARD ID:", note_id)
@@ -204,56 +227,67 @@ def editor_button():
         open_anki_note(note_id)
 
     def addOpenButton(buttons, editor):
-        new_button = editor.addButton(ICON_PATH,
-                                      open_action_text,
-                                      createOpenButton,
-                                      tip = f"{open_hint_text} ({open_shortcut})",
-                                      keys=open_shortcut)
+        new_button = editor.addButton(
+            ICON_PATH,
+            open_action_text,
+            createOpenButton,
+            tip=f"{open_hint_text} ({open_shortcut})",
+            keys=open_shortcut,
+        )
         buttons.append(new_button)
         return buttons
 
     # aqt.gui_hooks.editor_did_init_buttons.append(addOpenButton)
-    anki.hooks.addHook("setupEditorButtons", addOpenButton) # Legacy support
+    anki.hooks.addHook("setupEditorButtons", addOpenButton)  # Legacy support
+
 
 def reviewer_hooks():
     def on_context_menu(web_view, menu):
         window = web_view.window()
+
         def context_menu_open_note():
             try:  # this works for web views in the reviewer and template dialog
-                if window is aqt.mw and aqt.mw.state == 'review':
+                if window is aqt.mw and aqt.mw.state == "review":
                     current_card = aqt.mw.reviewer.card
                     # current_side = aqt.mw.reviewer.state
-                elif aqt.mw.state == 'deckBrowser':
+                elif aqt.mw.state == "deckBrowser":
                     current_card = bcard()
                     # current_side = aqt.mw.reviewer.state
-                elif web_view.objectName() == 'mainText':  # card template dialog
+                elif web_view.objectName() == "mainText":  # card template dialog
                     current_card = window.card
                 note_id = current_card.nid
                 # print('CARD ID::::', note_id)
                 open_anki_note(note_id)
             except Exception:  # just in case, pylint:disable=broad-except
                 pass
+
         m = menu.addAction(open_action_text, context_menu_open_note)
         m.setShortcut(open_shortcut)
         m.setIcon(aqt.qt.QIcon(os.path.join(ICONS_PATH, "unicorn.png")))
 
-    anki.hooks.addHook('AnkiWebView.contextMenuEvent', on_context_menu)
-    anki.hooks.addHook('EditorWebView.contextMenuEvent', on_context_menu)
-    anki.hooks.addHook('Reviewer.contextMenuEvent',
-                       lambda reviewer, menu:
-                       on_context_menu(reviewer.web, menu))
+    anki.hooks.addHook("AnkiWebView.contextMenuEvent", on_context_menu)
+    anki.hooks.addHook("EditorWebView.contextMenuEvent", on_context_menu)
+    anki.hooks.addHook(
+        "Reviewer.contextMenuEvent",
+        lambda reviewer, menu: on_context_menu(reviewer.web, menu),
+    )
+
 
 def preview_buttons():
     def setup_preview_slideshow(target_browser):
         "prepare when browser window shows up."
+
         def add_slideshow_ui_to_preview_window():
             preview_window = None
             bbox = None
             i = 0
             while True:
                 try:
-                    if app_version_major >= 23 or \
-                       app_version_major == 2 and app_version_micro >= 24:
+                    if (
+                        app_version_major >= 23
+                        or app_version_major == 2
+                        and app_version_micro >= 24
+                    ):
                         preview_window = target_browser._previewer
                         # from 2.1.24 we can reference bbox as attr
                         bbox = preview_window.bbox
@@ -276,7 +310,7 @@ def preview_buttons():
 
             # open_button = bbox.addButton("Open org note", aqt.qt.QDialogButtonBox.ActionRole)
             bbox.addButton(OpenButton(), aqt.qt.QDialogButtonBox.ButtonRole.ActionRole)
-            #open_button.setAutoDefault(True)
+            # open_button.setAutoDefault(True)
             # open_button.setToolTip("Open Org Note in Editor")
             # open_button.clicked.connect(request_open_note)
             #
@@ -289,13 +323,18 @@ def preview_buttons():
             return None
 
         original_preview_f = target_browser.onTogglePreview
+
         def onTogglePreview():
             original_preview_f()
             add_slideshow_ui_to_preview_window()
+
         target_browser.onTogglePreview = onTogglePreview
 
     # aqt.gui_hooks.browser_menus_did_init.append(setup_preview_slideshow)
-    anki.hooks.addHook("browser.setupMenus", setup_preview_slideshow) # Legacy support < 20
+    anki.hooks.addHook(
+        "browser.setupMenus", setup_preview_slideshow
+    )  # Legacy support < 20
+
 
 def browser_menus():
     def on_setup_menus(browser):
@@ -305,9 +344,10 @@ def browser_menus():
         m.addAction(act)
 
     anki.hooks.addHook(
-        'browser.setupMenus',
+        "browser.setupMenus",
         on_setup_menus,
     )
+
 
 def tools_menus():
     open_btn = aqt.qt.QAction(open_action_text, mw)
@@ -315,6 +355,7 @@ def tools_menus():
     open_btn.setShortcut(open_shortcut)
     open_btn.setIcon(aqt.qt.QIcon(ICON_PATH))
     mw.form.menuTools.addAction(open_btn)
+
 
 cards_button()
 editor_button()
