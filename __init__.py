@@ -159,7 +159,9 @@ def open_anki_note(note_id):
             )
 
             try:
-                subprocess.check_output(cmd, shell=True)
+                subprocess.check_output(
+                    cmd, stderr=subprocess.STDOUT, shell=True, universal_newlines=True
+                )
             except subprocess.CalledProcessError as err:
                 print(
                     f"E: Open anki note({note_id})\ncommand: {cmd}\n{err.returncode}, {err.output}"
