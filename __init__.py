@@ -160,9 +160,13 @@ def open_anki_note(note_id):
 
             try:
                 subprocess.check_output(cmd, shell=True)
-            except subprocess.CalledProcessError as err
-                print(f"E: Open anki note({note_id})\ncommand: {cmd}\n{err.returncode}, {err.output}")
-                aqt.utils.showWarning(f"E: Open anki note({note_id})\n{err.output}\n>>>>>>\ncommand: {cmd}")
+            except subprocess.CalledProcessError as err:
+                print(
+                    f"E: Open anki note({note_id})\ncommand: {cmd}\n{err.returncode}, {err.output}"
+                )
+                aqt.utils.showWarning(
+                    f"E: Open anki note({note_id})\n{err.output}\n>>>>>>\ncommand: {cmd}"
+                )
 
             found = True
             break
