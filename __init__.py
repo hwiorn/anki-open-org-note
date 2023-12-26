@@ -65,6 +65,7 @@ def search_in_org(file, note_id):
             import codecs
             encoding = config["fallback_encoding"]
             data = codecs.open(file, "r", encoding).read()
+        except Exception as e:
             try:
                 if encoding.lower() not in ['utf-8', 'utf8', 'utf_8']:
                     data = codecs.open(file, "r", 'utf-8').read()
