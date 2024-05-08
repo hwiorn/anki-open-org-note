@@ -21,6 +21,11 @@ field.
 3) Make your anki-card using [[https://github.com/eyeinsky/org-anki/][org-anki]] or [[https://github.com/louietan/anki-editor][anki-editor]].
    - This plugin handle cards only which are generated from =org= files using Emacs.
    - Make sure your Emacs server must be running. e.g. =M-x server-start=
+   #+begin_src emacs-lisp
+   (unless (server-running-p)
+     (server-start))
+   #+end_src
+
 4) When you are on =Review= or =Deck-Browser=, click the =Open Note= button or Press
    =Ctrl+O= key.
    - You can change the =Ctrl+O= shortcut in the config window.
@@ -32,6 +37,7 @@ field.
   - =org-anki= and =anki-editor= use the tree structure for card design. But
     =org-mode-incremental-reading= adds a [[https://orgmode.org/manual/Drawers.html][property drawer]] for the card design to
     handle the long text such as book and article sytles.
+- [ ] Support markdown files for obsidian and logseq.
 
 * Contributions
 - [[https://www.flaticon.com/free-icons/unicorn][Unicorn icons]] created by Freepik - Flaticon
